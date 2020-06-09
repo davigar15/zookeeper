@@ -1,0 +1,11 @@
+---
+
+extends: default
+rules:
+  line-length: disable
+yaml-files:
+  - '*.yaml'
+  - '*.yml'
+  - '.yamllint'
+ignore: |
+ .tox

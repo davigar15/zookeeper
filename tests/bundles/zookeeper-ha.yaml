@@ -1,0 +1,6 @@
+bundle: kubernetes
+applications:
+  zookeeper-k8s:
+    charm: '../../'
+    scale: 3
+    series: kubernetes
