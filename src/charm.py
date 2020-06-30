@@ -89,7 +89,7 @@ class ZookeeperCharm(CharmBase):
         }
 
         config_spec = {
-            "ZOO_STANDALONE_ENABLED": self.cluster.is_single,
+            "ZOO_STANDALONE_ENABLED": self.cluster.num_units > 1,
             "ZOO_ADMINSERVER_ENABLED": config["adminserver-enabled"],
             "ZOO_4LW_COMMANDS_WHITELIST": config["4lw-commands-whitelist"],
         }
@@ -112,7 +112,7 @@ class ZookeeperCharm(CharmBase):
                     "chmod +x /usr/bin/start-zookeeper &&",
                     "mkdir -p /opt/zookeeper/conf &&",
                     "start-zookeeper",
-                    "--servers={}".format(self.cluster.units),
+                    "--servers={}".format(self.cluster.num_units),
                     "--data_dir=/var/lib/zookeeper/data",
                     "--data_log_dir=/var/lib/zookeeper/data/log",
                     "--conf_dir=/opt/zookeeper/conf",

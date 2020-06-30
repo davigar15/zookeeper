@@ -56,7 +56,7 @@ class ZookeeperCluster(Object):
         return self._relation is not None
 
     @property
-    def units(self):
+    def num_units(self):
         return len(self._relation.units) + 1 if self.is_joined else 1
 
     @property
@@ -73,7 +73,3 @@ class ZookeeperCluster(Object):
     @property
     def _relations(self):
         return self.framework.model.relations[self._relation_name]
-
-    @property
-    def is_single(self):
-        return len(self._relations) == 1
