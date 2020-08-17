@@ -13,8 +13,7 @@ class ZookeeperInterfaceProvides(Object):
     def send_connection(self, port, rest_port, host=None):
         # Expose common settings via app relation data from a leader unit.
         if self.model.unit.is_leader():
-            app_data = self._relation.data[self.model.app]
-            app_data["port"] = "test" # str(port)
-            # app_data["rest_port"] = str(rest_port)
-            # app_data["host"] = str(host)
-
+            unit_data = self._relation.data[self.model.unit]
+            unit_data["port"] =  str(port)
+            unit_data["rest_port"] = str(rest_port)
+            unit_data["host"] = str(host)

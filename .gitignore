@@ -1,2 +1,4 @@
 .vscode
 .tox
+build
+zookeeper.charm

@@ -11,14 +11,20 @@ options:
     description: Zookeeper leader-election port
     type: int
     default: 3888
-  image:
-    description: Docker image name
+  zookeeper_image_path:
     type: string
-    default: zookeeper
-  version:
-    description: Zookeeper version to use
+    default: zookeeper:3.6.1
+    description: The docker image to install.
+  zookeeper_image_username:
     type: string
-    default: 3.5.8
+    description: |
+      The username for accessing the registry specified in zookeeper_image_path.
+    default: ""
+  zookeeper_image_password:
+    type: string
+    description: |
+      The password associated with zookeeper_image_username for accessing the registry specified in zookeeper_image_path.
+    default: ""
   tick-time:
     description: |
       The length of a single tick, which is the basic time unit used by ZooKeeper,
@@ -46,6 +52,16 @@ options:
       of the ZooKeeper ensemble.
     type: int
     default: 60
+  standalone-enabled:
+    description: |
+      Prior to 3.5.0, one could run ZooKeeper in Standalone mode or in a Distributed mode.
+      These are separate implementation stacks, and switching between them during run time
+      is not possible. By default (for backward compatibility) standaloneEnabled is set to true.
+      The consequence of using this default is that if started with a single server the ensemble
+      will not be allowed to grow, and if started with more than one server it will not be 
+      allowed to shrink to contain fewer than two participants.
+    type: boolean
+    default: true
   adminserver-enabled:
     description: |
       New in 3.5.0: The AdminServer is an embedded Jetty server that provides
@@ -55,13 +71,13 @@ options:
       e.g., http://localhost:8080/commands/stat.
     type: boolean
     default: true
-  purge-interval:
+  autopurge-purgeinterval:
     description: |
       The time interval in hours for which the purge task has to be triggered.
       Set to a positive integer (1 and above) to enable the auto purging.
     type: int
     default: 0
-  snap-retain-count:
+  autopurge-snapretaincount:
     description: |
       When enabled, ZooKeeper auto purge feature retains the
       autopurge.snapRetainCount most recent snapshots and the corresponding
@@ -78,6 +94,31 @@ options:
       The rest of four letter word commands are disabled by default.
     type: string
     default: srvr
+  cfg-extra:
+    description: |
+      Not every Zookeeper configuration setting is exposed via the environment
+      variables listed above. These variables are only meant to cover minimum 
+      configuration keywords and some often changing options. If mounting your 
+      custom config file as a volume doesn't work for you, consider using 
+      ZOO_CFG_EXTRA environment variable. You can add arbitrary configuration 
+      parameters to Zookeeper configuration file using this variable.
+    type: string
+    default: ""
+  jvmflags:
+    description: |
+      Many of the Zookeeper advanced configuration options can be set there using 
+      Java system properties in the form of -Dproperty=value. For example, you can 
+      use Netty instead of NIO (default option) as a server communication framework:
+      $ docker run --name some-zookeeper --restart always -e JVMFLAGS="-Dzookeeper.serverCnxnFactory=org.apache.zookeeper.server.NettyServerCnxnFactory" zookeeper
+      See Advanced Configuration for the full list of supported Java system properties.
+      Another example use case for the JVMFLAGS is setting a maximum JWM heap size of 1 GB:
+      $ docker run --name some-zookeeper --restart always -e JVMFLAGS="-Xmx1024m" zookeeper
+    type: string
+    default: ""
+  log4j-prop:
+    description: TODO
+    type: string
+    default: ""
   heap:
     description: Heap memory
     type: string
@@ -90,7 +131,7 @@ options:
     description: Min session timeout
     type: int
     default: 4000
-  log-level:
+  log4j_prop:
     description: Log level
     type: string
-    default: INFO
+    default: INFO,ROLLINGFILE
